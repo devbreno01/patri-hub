@@ -11,7 +11,6 @@ import com.patrihub.patri_hub_api.dto.AssetCreateDTO;
 import com.patrihub.patri_hub_api.dto.AssetResponseDTO;
 import com.patrihub.patri_hub_api.repository.AssetRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
