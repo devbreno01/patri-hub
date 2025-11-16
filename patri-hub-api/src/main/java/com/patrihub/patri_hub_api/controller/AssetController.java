@@ -29,10 +29,12 @@ public class AssetController {
     @PostMapping("/create")
     public ResponseEntity<?> register (@RequestBody AssetCreateDTO dto){
         AssetResponseDTO asset = assetService.create(dto); 
-        
+
         return ResponseEntity
-            .ok(Map.of(
-                   
+            .status(HttpStatus.CREATED)
+            .body(Map.of(
+                "Patrimonio cadastrado com sucesso",
+                asset
             ));
     }
 
