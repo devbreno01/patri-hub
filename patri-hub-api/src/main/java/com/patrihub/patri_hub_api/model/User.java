@@ -1,0 +1,23 @@
+package com.patrihub.patri_hub_api.model;
+
+import jakarta.persistence.*;
+import lombok.Data;
+
+@Data
+@Entity
+@Table(name = "users")
+public class User {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    private String name;
+
+    @Column(nullable = false, unique = true)
+    private String email;
+
+    private String password;
+    private String occupation;
+    private String typeOfJob;
+}
