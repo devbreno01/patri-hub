@@ -8,7 +8,7 @@ public record AssetCreateDTO(
 
     String description, 
     
-    @NotNull(message = "Categoria is required")
+    @NotNull(message = "Categoria is requirido")
     Character category, 
     Character stateOfConservation, 
     BigDecimal value, 
