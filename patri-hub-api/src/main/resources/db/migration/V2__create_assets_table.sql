@@ -9,6 +9,6 @@ CREATE TABLE assets(
 	photo VARCHAR(200),
 	status char(1),
 	CONSTRAINT fk_user_assets 
-		FOREIGN KEY(user_id) REFERENCES user(id)
+		FOREIGN KEY(user_id) REFERENCES users(id)
 	
 ); 

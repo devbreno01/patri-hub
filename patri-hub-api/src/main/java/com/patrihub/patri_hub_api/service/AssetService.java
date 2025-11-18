@@ -11,6 +11,10 @@ import com.patrihub.patri_hub_api.dto.AssetCreateDTO;
 import com.patrihub.patri_hub_api.dto.AssetResponseDTO;
 import com.patrihub.patri_hub_api.repository.AssetRepository;
 import lombok.RequiredArgsConstructor;
+import java.util.Map;
+import java.util.HashMap;
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 
 @Service
@@ -41,6 +45,22 @@ public class AssetService {
             asset.getStatus()
 
         );
+    }
+
+    public List<AssetResponseDTO> findAll() {
+        List<Asset> assets = repository.findAll();
+
+          return assets.stream()
+            .map(asset -> new AssetResponseDTO(
+                asset.getName(),
+                asset.getDescription(),
+                asset.getCategory(),
+                asset.getStateOfConservation(),
+                asset.getValue(),
+                asset.getPhoto(),
+                asset.getStatus()
+            ))
+            .toList();
     }
 
 }

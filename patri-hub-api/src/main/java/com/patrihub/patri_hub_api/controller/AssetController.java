@@ -17,6 +17,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -33,9 +35,21 @@ public class AssetController {
         return ResponseEntity
             .status(HttpStatus.CREATED)
             .body(Map.of(
-                "Patrimonio cadastrado com sucesso",
-                asset
+                "message:","Patrimonio cadastrado com sucesso",
+                "data", asset
             ));
+    }
+
+    @GetMapping("/getAll")
+    public ResponseEntity<?> getAll() {
+        List<AssetResponseDTO> list = assetService.findAll();
+
+        return ResponseEntity.ok(
+            Map.of(
+                "message", "Lista de Patrimônios",
+                "data", list
+            )
+        );
     }
 
 }
