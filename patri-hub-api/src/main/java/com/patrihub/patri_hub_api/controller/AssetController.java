@@ -53,6 +53,20 @@ public class AssetController {
         );
     }
 
+    @GetMapping("/getById/{id}")
+    public ResponseEntity<?> getById(@PathVariable Long id) {
+
+        AssetResponseDTO dto = assetService.findByIdByLoggedUser(id);
+
+        return ResponseEntity.ok(
+            Map.of(
+                "message", "Patrimônio encontrado",
+                "data", dto
+            )
+        );
+    }
+
+
     @PutMapping("/update/{id}")
     public ResponseEntity<?> update(
         @PathVariable Long id,
@@ -67,6 +81,16 @@ public class AssetController {
                 )
             );
         }
-
+    
+    @DeleteMapping("delete/{id}")
+    public ResponseEntity<?> delete(@PathVariable Long id) {
+        assetService.delete(id);
+        return ResponseEntity.ok(
+            Map.of(
+                "status" , "success",
+                "message", "Patrimônio deletado com sucesso!"
+            )
+        );
+    }
 
 }

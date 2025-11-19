@@ -62,8 +62,6 @@ public class AssetService {
     }
 
     public AssetResponseDTO update(Long id, AssetCreateDTO dto) {
-
-        // Obtém e valida o token direto do header
         String token = getTokenFromHeader();
         String email = jwtService.extractEmail(token);
 
@@ -73,12 +71,11 @@ public class AssetService {
         Asset asset = repository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Patrimônio não encontrado"));
 
-        // Garante que o patrimônio pertence ao usuário
+       
         if (asset.getUserIid() != user.getId()) {
             throw new RuntimeException("Você não tem permissão para alterar este patrimônio!");
         }
 
-        // Atualiza
         asset.setName(dto.name());
         asset.setDescription(dto.description());
         asset.setCategory(dto.category());
@@ -100,9 +97,25 @@ public class AssetService {
         );
     }
 
+    public void delete (Long id){
+        String token = getTokenFromHeader(); 
+        String email = jwtService.extractEmail(token);
+
+        User user = userRepository.findByEmail(email)
+            .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
+
+        Asset asset = repository.findById(id)
+            .orElseThrow(() -> new RuntimeException("Patrimônio não encontrado"));
+        
+        if (asset.getUserIid() != user.getId()) {
+            throw new RuntimeException("Você não tem permissão para excluir este patrimônio!");
+        }
+
+        repository.delete(asset);
+       
+    }
 
     public List<AssetResponseDTO> findAllByLoggedUser() {
-
         String token = getTokenFromHeader();
         String email = jwtService.extractEmail(token);
 
@@ -123,6 +136,29 @@ public class AssetService {
                 asset.getStatus()
             )
         ).toList();
+    }
+
+    public AssetResponseDTO findByIdByLoggedUser(Long id) {
+        String token = getTokenFromHeader();
+        String email = jwtService.extractEmail(token);
+
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
+
+        
+        Asset asset = repository.findByIdAndUserIid(id, user.getId())
+            .orElseThrow(() -> new RuntimeException("Patrimônio não encontrado ou não pertence ao usuário"));
+            
+        return new AssetResponseDTO(
+            asset.getName(),
+            asset.getDescription(),
+            asset.getCategory(),
+            asset.getStateOfConservation(),
+            asset.getValue(),
+            asset.getPhoto(),
+            asset.getStatus()
+        );
+
     }
 
     
