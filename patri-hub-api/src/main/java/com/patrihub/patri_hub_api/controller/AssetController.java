@@ -29,11 +29,10 @@ public class AssetController {
     private final AssetService assetService; 
     private final UserRepository userRepository; 
     private final JwtService jwtService; 
+
     @PostMapping("/create")
     public ResponseEntity<?> register (@RequestBody AssetCreateDTO dto){
         AssetResponseDTO asset = assetService.create(dto); 
-       
-
         return ResponseEntity
             .status(HttpStatus.CREATED)
             .body(Map.of(
@@ -44,7 +43,7 @@ public class AssetController {
 
     @GetMapping("/getAll")
     public ResponseEntity<?> getAll() {
-        List<AssetResponseDTO> list = assetService.findAll();
+        List<AssetResponseDTO> list = assetService.findAllByLoggedUser();
 
         return ResponseEntity.ok(
             Map.of(
@@ -53,5 +52,21 @@ public class AssetController {
             )
         );
     }
+
+    @PutMapping("/update/{id}")
+    public ResponseEntity<?> update(
+        @PathVariable Long id,
+        @RequestBody AssetCreateDTO dto) {
+
+            AssetResponseDTO updated = assetService.update(id, dto);
+
+            return ResponseEntity.ok(
+                Map.of(
+                    "message", "Patrimônio atualizado com sucesso!",
+                    "data", updated
+                )
+            );
+        }
+
 
 }

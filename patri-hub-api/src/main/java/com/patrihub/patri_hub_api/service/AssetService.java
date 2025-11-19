@@ -12,6 +12,9 @@ import com.patrihub.patri_hub_api.dto.AssetResponseDTO;
 import com.patrihub.patri_hub_api.repository.AssetRepository;
 import com.patrihub.patri_hub_api.repository.UserRepository;
 import com.patrihub.patri_hub_api.service.UserService;
+
+import jakarta.servlet.http.HttpServletRequest;
+
 import com.patrihub.patri_hub_api.model.User;
 import lombok.RequiredArgsConstructor;
 import java.util.Map;
@@ -27,42 +30,66 @@ public class AssetService {
     private final AssetRepository repository; 
     private final UserRepository userRepository; 
     private final JwtService jwtService; 
+    private final HttpServletRequest request; 
 
     public AssetResponseDTO create(AssetCreateDTO dto) {
-    User user = (User) SecurityContextHolder
-            .getContext()
-            .getAuthentication()
-            .getPrincipal();
+        User user = (User) SecurityContextHolder
+                .getContext()
+                .getAuthentication()
+                .getPrincipal();
 
-    Asset asset = new Asset();
-    asset.setName(dto.name());
-    asset.setDescription(dto.description());
-    asset.setCategory(dto.category());
-    asset.setStateOfConservation(dto.stateOfConservation());
-    asset.setValue(dto.value());
-    asset.setPhoto(dto.photo());
-    asset.setStatus(dto.status());
-    asset.setUserIid(user.getId());
+        Asset asset = new Asset();
+        asset.setName(dto.name());
+        asset.setDescription(dto.description());
+        asset.setCategory(dto.category());
+        asset.setStateOfConservation(dto.stateOfConservation());
+        asset.setValue(dto.value());
+        asset.setPhoto(dto.photo());
+        asset.setStatus(dto.status());
+        asset.setUserIid(user.getId());
 
-    repository.save(asset);
+        repository.save(asset);
 
-    return new AssetResponseDTO(
-        asset.getName(),
-        asset.getDescription(),
-        asset.getCategory(),
-        asset.getStateOfConservation(),
-        asset.getValue(),
-        asset.getPhoto(),
-        asset.getStatus()
-    );
-}
+        return new AssetResponseDTO(
+            asset.getName(),
+            asset.getDescription(),
+            asset.getCategory(),
+            asset.getStateOfConservation(),
+            asset.getValue(),
+            asset.getPhoto(),
+            asset.getStatus()
+        );
+    }
 
+    public AssetResponseDTO update(Long id, AssetCreateDTO dto) {
 
-    public List<AssetResponseDTO> findAll() {
-        List<Asset> assets = repository.findAll();
+        // Obtém e valida o token direto do header
+        String token = getTokenFromHeader();
+        String email = jwtService.extractEmail(token);
 
-          return assets.stream()
-            .map(asset -> new AssetResponseDTO(
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
+
+        Asset asset = repository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Patrimônio não encontrado"));
+
+        // Garante que o patrimônio pertence ao usuário
+        if (asset.getUserIid() != user.getId()) {
+            throw new RuntimeException("Você não tem permissão para alterar este patrimônio!");
+        }
+
+        // Atualiza
+        asset.setName(dto.name());
+        asset.setDescription(dto.description());
+        asset.setCategory(dto.category());
+        asset.setStateOfConservation(dto.stateOfConservation());
+        asset.setValue(dto.value());
+        asset.setPhoto(dto.photo());
+        asset.setStatus(dto.status());
+
+        repository.save(asset);
+
+        return new AssetResponseDTO(
                 asset.getName(),
                 asset.getDescription(),
                 asset.getCategory(),
@@ -70,8 +97,41 @@ public class AssetService {
                 asset.getValue(),
                 asset.getPhoto(),
                 asset.getStatus()
-            ))
-            .toList();
+        );
+    }
+
+
+    public List<AssetResponseDTO> findAllByLoggedUser() {
+
+        String token = getTokenFromHeader();
+        String email = jwtService.extractEmail(token);
+
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
+
+        
+        List<Asset> assets = repository.findByUserIid(user.getId());
+
+        return assets.stream().map(asset ->
+            new AssetResponseDTO(
+                asset.getName(),
+                asset.getDescription(),
+                asset.getCategory(),
+                asset.getStateOfConservation(),
+                asset.getValue(),
+                asset.getPhoto(),
+                asset.getStatus()
+            )
+        ).toList();
+    }
+
+    
+    private String getTokenFromHeader() {
+        String auth = request.getHeader("Authorization");
+        if (auth == null || !auth.startsWith("Bearer ")) {
+            throw new RuntimeException("Token não encontrado no header");
+        }
+        return auth.substring(7);
     }
 
 }
