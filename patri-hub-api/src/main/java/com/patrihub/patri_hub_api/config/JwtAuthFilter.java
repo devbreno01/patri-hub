@@ -1,60 +1,64 @@
 package com.patrihub.patri_hub_api.config;
 
+import com.patrihub.patri_hub_api.model.User;
+import com.patrihub.patri_hub_api.repository.UserRepository;
 import com.patrihub.patri_hub_api.service.JwtService;
-import com.patrihub.patri_hub_api.service.UserService;
-import jakarta.servlet.*;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
+import org.springframework.web.filter.OncePerRequestFilter;
+
 import java.io.IOException;
+import java.util.ArrayList;
 
 @Component
-public class JwtAuthFilter extends GenericFilter {
+@RequiredArgsConstructor
+public class JwtAuthFilter extends OncePerRequestFilter {
 
     private final JwtService jwtService;
-    private final UserService userService;
-
-    public JwtAuthFilter(JwtService jwtService, UserService userService) {
-        this.jwtService = jwtService;
-        this.userService = userService;
-    }
+    private final UserRepository userRepository;
 
     @Override
-    public void doFilter(
-            ServletRequest request,
-            ServletResponse response,
-            FilterChain chain
-    ) throws IOException, ServletException {
+    protected void doFilterInternal(HttpServletRequest request,
+                                    HttpServletResponse response,
+                                    FilterChain filterChain) throws ServletException, IOException {
 
-        HttpServletRequest http = (HttpServletRequest) request;
-        String authHeader = http.getHeader("Authorization");
+        final String authHeader = request.getHeader("Authorization");
 
-        if (authHeader != null && authHeader.startsWith("Bearer ")) {
-            String token = authHeader.substring(7);
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            filterChain.doFilter(request, response);
+            return;
+        }
 
-            try {
-                String email = jwtService.extractEmail(token);
+        String token = authHeader.substring(7).trim();
 
-                var userDetails = userService.loadUserByUsername(email);
+        String email = jwtService.extractEmail(token);
 
-                var auth = new UsernamePasswordAuthenticationToken(
-                        userDetails,
-                        null,
-                        userDetails.getAuthorities()
+        if (email != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+            User user = userRepository.findByEmail(email).orElse(null);
+
+            if (user != null && jwtService.isTokenValid(token, user)) {
+                UsernamePasswordAuthenticationToken authentication =
+                        new UsernamePasswordAuthenticationToken(
+                                user,
+                                null,  
+                                user.getAuthorities()  
+                        );
+                
+                authentication.setDetails(
+                        new WebAuthenticationDetailsSource().buildDetails(request)
                 );
-                auth.setDetails(new WebAuthenticationDetailsSource().buildDetails(http));
 
-                SecurityContextHolder.getContext().setAuthentication(auth);
-
-            } catch (Exception e) {
-                ((HttpServletResponse) response).sendError(403, "Token inválido");
-                return;
+                SecurityContextHolder.getContext().setAuthentication(authentication);
             }
         }
 
-        chain.doFilter(request, response);
+        filterChain.doFilter(request, response);
     }
 }

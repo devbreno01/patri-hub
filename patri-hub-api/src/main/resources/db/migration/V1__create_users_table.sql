@@ -4,5 +4,6 @@ CREATE TABLE IF NOT EXISTS users(
 	email VARCHAR(100) NOT NULL UNIQUE,
 	password VARCHAR(255) NOT NULL,
 	occupation VARCHAR(100),
+	role VARCHAR(100),
 	type_of_job VARCHAR(100)
 );

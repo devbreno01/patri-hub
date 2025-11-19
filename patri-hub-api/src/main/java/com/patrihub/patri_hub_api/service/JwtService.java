@@ -1,11 +1,13 @@
 package com.patrihub.patri_hub_api.service;
 
+import com.patrihub.patri_hub_api.model.User;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import javax.crypto.SecretKey;
 import java.util.Date;
 
@@ -35,5 +37,38 @@ public class JwtService {
                 .parseSignedClaims(token)
                 .getPayload()
                 .getSubject();
+    }
+
+    
+    public String getCurrentToken() {
+        var auth = SecurityContextHolder.getContext().getAuthentication();
+
+        if (auth == null || !(auth instanceof UsernamePasswordAuthenticationToken)) {
+            return null;
+        }
+
+        return (String) auth.getCredentials(); 
+    }
+
+    public boolean isTokenValid(String token, User user) {
+        try {
+            String email = extractEmail(token);
+            return email.equals(user.getEmail()) && !isTokenExpired(token);
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    private boolean isTokenExpired(String token) {
+        return extractExpiration(token).before(new Date());
+    }
+
+    private Date extractExpiration(String token) {
+        return Jwts.parser()
+                .verifyWith(getSigninKey())
+                .build()
+                .parseSignedClaims(token)
+                .getPayload()
+                .getExpiration();
     }
 }
