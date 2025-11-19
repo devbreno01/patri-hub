@@ -52,7 +52,7 @@ public class AuthController {
           return ResponseEntity
             .ok(Map.of(
                     "message", "Login realizado com sucesso!",
-                    "user", user,
+                    "status", "Authorized",
                     "token", token
             ));
         }
