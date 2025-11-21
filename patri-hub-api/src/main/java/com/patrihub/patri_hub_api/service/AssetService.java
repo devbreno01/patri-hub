@@ -51,6 +51,7 @@ public class AssetService {
         repository.save(asset);
 
         return new AssetResponseDTO(
+            asset.getId(),
             asset.getName(),
             asset.getDescription(),
             asset.getCategory(),
@@ -87,6 +88,7 @@ public class AssetService {
         repository.save(asset);
 
         return new AssetResponseDTO(
+                asset.getId(),
                 asset.getName(),
                 asset.getDescription(),
                 asset.getCategory(),
@@ -127,6 +129,7 @@ public class AssetService {
 
         return assets.stream().map(asset ->
             new AssetResponseDTO(
+                asset.getId(),
                 asset.getName(),
                 asset.getDescription(),
                 asset.getCategory(),
@@ -150,6 +153,7 @@ public class AssetService {
             .orElseThrow(() -> new RuntimeException("Patrimônio não encontrado ou não pertence ao usuário"));
             
         return new AssetResponseDTO(
+            asset.getId(),
             asset.getName(),
             asset.getDescription(),
             asset.getCategory(),
@@ -169,5 +173,7 @@ public class AssetService {
         }
         return auth.substring(7);
     }
+
+    
 
 }

@@ -3,6 +3,7 @@ package com.patrihub.patri_hub_api.dto;
 import java.math.BigDecimal;
 
 public record AssetResponseDTO(
+    Long id,
     String name, 
     String description, 
     Character category, 
