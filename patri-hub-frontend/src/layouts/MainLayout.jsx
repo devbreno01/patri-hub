@@ -1,17 +1,14 @@
 import {Outlet} from "react-router-dom"
 import { AppSidebar } from "@/components/AppSideBar"
-
+import { SidebarProvider } from "@/components/ui/sidebar"
 
 export function MainLayout(){
     return (
-        <div className="flex">
-        
-        <AppSidebar />
-
-        
-        <main className="flex-1 p-6">
-            <Outlet />
-        </main>
-        </div>
+        <SidebarProvider>
+            <AppSidebar/>
+            <div className="w-full">
+                <h2>CARALHO</h2>
+            </div>
+        </SidebarProvider>
     )
 }
