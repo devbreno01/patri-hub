@@ -126,7 +126,7 @@ Principais telas:
 
 ---
 
-# 🛠️ **Como rodar o localmente**
+# 🛠️ **Como rodar localmente**
 
 ```bash
 # 🛠️ **Como rodar o backend localmente**
