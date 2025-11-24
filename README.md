@@ -126,9 +126,10 @@ Principais telas:
 
 ---
 
-# 🛠️ **Como rodar o backend localmente**
+# 🛠️ **Como rodar o localmente**
 
 ```bash
+# 🛠️ **Como rodar o backend localmente**
 git clone <repo>
 
 cd patrihub-api
