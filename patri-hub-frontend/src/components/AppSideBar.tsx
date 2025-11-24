@@ -1,4 +1,4 @@
-import { Home, Inbox, Search, Settings, ChevronRight } from "lucide-react"
+import { Home, Building, Users, Link2, ChevronRight } from "lucide-react"
 import { 
   Sidebar,
   SidebarContent, 
@@ -18,20 +18,22 @@ const items = [
   {
     title: "Patrimônios",
     url: "/assets",
-    icon: Inbox,
+    icon: Building,
   },
   {
     title: "Herdeiros",
     url: "/heirs",
-    icon: Search,
+    icon: Users,
   },
   {
     title: "Associate",
     url: "/associate",
-    icon: Settings,
+    icon: Link2,
   }
 ]; 
-
+ function removeToken(){
+    localStorage.removeItem("token")
+  }
 export function AppSidebar() {
   return (
     <Sidebar className="border-r-0">
@@ -81,14 +83,9 @@ export function AppSidebar() {
       <SidebarFooter className="p-4">
         <div className="rounded-xl bg-gradient-to-r from-gray-50 to-gray-100 p-4">
           <div className="flex items-center gap-3">
-            <div className="h-10 w-10 rounded-full bg-gradient-to-br from-violet-400 to-indigo-500 flex items-center justify-center text-white font-medium shadow-md">
-              U
-            </div>
-            <div className="flex-1 min-w-0">
-              <p className="text-sm font-medium text-gray-800 truncate">Usuário</p>
-              <p className="text-xs text-gray-500 truncate">user@email.com</p>
-            </div>
-            <Settings className="h-4 w-4 text-gray-400 hover:text-violet-500 cursor-pointer transition-colors" />
+            <button onClick={removeToken} className="text-sm font-medium text-gray-700 hover:text-violet-600 transition-colors">
+              Logout
+            </button>
           </div>
         </div>
       </SidebarFooter>
