@@ -17,6 +17,7 @@ public class CorsConfig {
                         .allowedOrigins(
                             "http://localhost:5173",
                             "https://patrihub-web.vercel.app",
+                            "https://patri-hub.vercel.app",
                             "https://patrihub-api.onrender.com"
                         )
                         .allowedMethods("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS")
