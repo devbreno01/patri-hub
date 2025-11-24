@@ -83,9 +83,11 @@ export function AppSidebar() {
       <SidebarFooter className="p-4">
         <div className="rounded-xl bg-gradient-to-r from-gray-50 to-gray-100 p-4">
           <div className="flex items-center gap-3">
-            <button onClick={removeToken} className="text-sm font-medium text-gray-700 hover:text-violet-600 transition-colors">
-              Logout
-            </button>
+            <a href="/login">
+              <button onClick={removeToken} className="text-sm font-medium text-gray-700 hover:text-violet-600 transition-colors">
+                Logout
+              </button>
+            </a>
           </div>
         </div>
       </SidebarFooter>
