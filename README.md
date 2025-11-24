@@ -3,6 +3,10 @@
 O **PatriHub** é um sistema **fullstack** desenvolvido para auxiliar no **controle e gestão de patrimônio**, permitindo o cadastro de bens, herdeiros e o relacionamento entre ambos.  
 O projeto foi desenvolvido como entrega da disciplina **Programação Orientada a Objetos em Java** (Prof. Heleno).
 
+# Componentes da Equipe
+BRENO DE JESUS GUIMARÃES (RA: 202402533584)
+LUCAS BRENDO ALVES DOS SANTOS CONÇEIÇÃO (202402533843)
+
 Este repositório engloba:
 
 - **Backend:** Java 21 + Spring Boot  
