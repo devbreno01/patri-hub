@@ -221,19 +221,22 @@ import { Button } from "@/components/ui/button";
         <div className="rounded-lg border border-gray-200 bg-white shadow-sm overflow-hidden ">
           <div className="overflow-x-auto">
             <table className="w-full border-collapse">
-              <thead>
-                <tr className="bg-gray-50 border-b border-gray-200">
-                  <th className="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Nome</th>
-                  <th className="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Descrição</th>
-                  <th className="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Valor</th>
-                  <th className="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Status</th>
-                  <th className="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Ações</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-gray-200" >
+               {assets.length > 0 && (
+                  <thead>
+                    <tr className="bg-gray-50 border-b border-gray-200">
+                      <th className="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Nome</th>
+                      <th className="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Descrição</th>
+                      <th className="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Valor</th>
+                      <th className="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Status</th>
+                      <th className="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Ações</th>
+                    </tr>
+                  </thead>
+                )}
+
                 {assets.map(asset => {
                         return (
-                            
+                         
+                        <tbody className="divide-y divide-gray-200" >
                             <tr className="hover:bg-gray-50 transition-colors" key={asset.id}>
                                 <td className="px-6 py-4 text-sm font-medium text-gray-900">{asset.name}</td>
                                 <td className="px-6 py-4 text-sm text-gray-600">{asset.description}</td>
@@ -253,11 +256,11 @@ import { Button } from "@/components/ui/button";
                                     </a>
                                 </td>
                             </tr>
-                            
+                            </tbody> 
                         )
                        
                     })}
-                 </tbody>              
+                              
             </table>
             
           </div>
